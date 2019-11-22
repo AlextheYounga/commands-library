@@ -1,1 +1,44 @@
-<p> Hello </p>
+<section class="quotes">
+    <h1 class="gothic-neo mb-8 pt-20 text-center text-red-700">Library</h1>
+        <div class="container mx-auto px-2">
+            <div class="flex">
+                <div class="w-1/3 sm:w-1/6">
+                <ul class="category-list list-reset">
+                    <li><button id="showall" class="bg-white border border-red-700 text-red-700 hover:bg-red-700 hover:text-red-100 p-2 rounded-l-lg w-full text-sm sm:text-md">Show All</button></li>                
+                    </li>
+                </ul>
+                </div>
+                <div class="quotes border border-red-700 text-red-700 rounded-r-lg w-2/3 sm:w-5/6 shadow-md bg-white">
+                <% if @items.any?
+                    then %>
+                <% @items.each do |quote| %>
+                <div class="quote <%= quote.category%> p-4 sm:pl-8 sm:py-4">
+                    <p class="text-sm sm:text-md tracking-normal leading-normal pb-1 text-grey-darkest"><%= quote.quote %></p>
+                    <p class="gothic-neo text-red-700">- <%= quote.name %></p>
+                </div>
+                <% end %>
+                <% end %>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <% content_for :javascripts do %>
+    <script>
+        $(function () {
+    
+        $('.category-list button').click(function () {
+            var get_id = this.id;
+            var get_current = $('.quotes .' + get_id);
+    
+            $('.quote').not(get_current).hide(500);
+            get_current.show(500);
+        });
+    
+    
+        $('#showall').click(function () {
+            $('.quote').show(500);
+        });
+        });
+    </script>
+    <% end %>

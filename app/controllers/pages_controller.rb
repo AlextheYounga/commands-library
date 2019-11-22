@@ -1,6 +1,7 @@
 class PagesController < ApplicationController
 
-    def home 
+    def home
+        @items = Item.all
     end
 
 end
