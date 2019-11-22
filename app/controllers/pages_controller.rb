@@ -5,6 +5,7 @@ class PagesController < ApplicationController
 
     def library
         @items = Item.all
+        @categories = Category.all
     end
 
 end
