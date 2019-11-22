@@ -1,0 +1,95 @@
+<section>
+    <h1 class="gothic-neo mb-8 pt-20 text-center text-red-700">Library</h1>
+    <div class="container mx-auto px-2">
+        <div class="flex">
+            <div class="w-1/3 sm:w-1/6">
+                <ul class="category-list list-reset">
+                    <li><button id="showall" class="bg-white border border-red-700 text-red-700 hover:bg-red-700 hover:text-red-100 p-2 rounded-l-lg w-full text-sm sm:text-md">Show All</button></li>
+                    <% if @categories.any? then %>
+                    <% @categories.each do |cat| %>
+                    <li><button id="<%= cat.name %>" class="bg-white border border-red-700 text-red-700 hover:bg-red-700 hover:text-red-100 p-2 rounded-l-lg w-full text-sm sm:text-md">Show All</button></li>
+                    <% end%>
+                </ul>
+            </div>
+            <div class="items border border-red-700 text-red-700 rounded-r-lg w-2/3 sm:w-5/6 shadow-md bg-white">
+                <% if @items.any? then %>
+                <% @items.each do |item| %>
+                <div class="item <%= item.category %> p-4 sm:pl-8 sm:py-4">
+                    <p class="item-content text-sm sm:text-md tracking-normal leading-normal pb-1 text-grey-darkest"><%= item.content %></p>
+                    <p class="item-notes gothic-neo text-red-700"> <%= item.notes %></p>
+                </div>
+                <% end %>
+                <% end %>
+            </div>
+        </div>
+    </div>
+</section>
+
+<% content_for :javascripts do %>
+<script>
+    $(function () {
+        $('.category-list button').click(function () {
+            var get_id = this.id;
+            var get_current = $('.items .' + get_id);
+
+            $('.item').not(get_current).hide(500);
+            get_current.show(500);
+        });
+        $('#showall').click(function () {
+            $('.item').show(500);
+        });
+    });
+
+    function autosave() {
+        var timeoutId;
+        $("#timesheet input, #timesheet textarea").on("input propertychange change", function () {
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(function () {
+                // Runs 1 second (1000 ms) after the last change
+                saveToDB();
+            }, 1000);
+        });
+    }
+
+    function saveToDB() {
+        console.log("Saving to the db");
+        var categories = [];
+        $(".category-list .new-category").each(function (index) {
+            items.push({
+                name: $(this).find('.time-start').val(),
+                color: $(this).find('.task-body').val(),                
+            });
+        });     
+        var items = [];
+        $(".items .new-item").each(function (index) {
+            items.push({
+                content: $(this).find('.item-content').val(),
+                notes: $(this).find('.item-notes').val(),                
+            });
+        });
+        console.log(timeblock);
+        $.ajax({
+            async: false,
+            type: "POST",
+            data: {
+                category: categories,
+                item: items
+            },
+            url: "/library/autosave",
+            beforeSend: function (xhr) {
+                // Let them know we are saving
+                $(".form-status").html("Creating and Saving...");
+            },
+            fail: function () {
+                $(".form-status").html("");
+                $(".form-status").html("There was a problem saving...");
+            },
+            success: function () {
+                var d = new Date();
+                $(".form-status").html("");
+                $(".form-status").html("Saved! Last: " + d.toLocaleTimeString());
+            }
+        });
+    }
+</script>
+<% end %>
