@@ -1,11 +1,31 @@
 .helvetica {
-    font-family: HelveticaNeue;  
+  font-family: HelveticaNeue;
+}
+
+.gothic-neo {
+  font-family: Apple SD Gothic Neo;
+}
+
+input,
+textarea,
+label,
+button {
+  &:focus {
+    outline: none !important;
+    -webkit-box-shadow: none !important;
+    -moz-box-shadow: none !important;
+    box-shadow: none !important;
   }
-  
-  .gothic-neo {
-    font-family: Apple SD Gothic Neo;
-  }
-  
-  .bg-dark-mode {
-    background-color: #424242;
-  }
+}
+
+.bg-dark-mode {
+  background-color: #212121;
+}
+
+.bg-dark-mode-lighter {
+  background-color: #424242;
+}
+
+.add-list {
+  fill: #f7fafc;
+}

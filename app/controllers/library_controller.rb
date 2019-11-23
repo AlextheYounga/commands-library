@@ -1,7 +1,7 @@
 class LibraryController < ApplicationController
 
-    def autosave
-        if (params["item"] != nil)
+    def save
+        
       
           if Timesheet.where(:date => params["date"]).where(:uuid => params["uuid"]).exists?
           Timesheet.where(uuid: params["uuid"], date: params["date"]).update(
