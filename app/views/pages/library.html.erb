@@ -7,48 +7,60 @@
                     <ul class="category-list list-reset">
                         <li><button id="showall" class="bg-dark-mode-lighter border border-gray-700 text-gray-100 hover:border-gray-700 hover:bg-gray-100 hover:text-gray-700 p-2 rounded w-full text-sm sm:text-md">Show All</button></li>
                         <% if @categories.any? then %>
-                            <% @categories.each do |cat| %>
-                                <li><button id="<%= cat.class %>" val="<%= cat.id %>" class="bg-dark-mode-lighter border border-gray-700 text-gray-100 hover:border-gray-700 hover:bg-gray-100 hover:text-gray-700 p-2 rounded-l-lg w-full text-sm sm:text-md"><%= cat.name %>/button></li>
-                            <% end %>
+                        <% @categories.each do |cat| %>
+                        <li><button id="<%= cat.class %>" val="<%= cat.id %>" class="bg-dark-mode-lighter border border-gray-700 text-gray-100 hover:border-gray-700 hover:bg-gray-100 hover:text-gray-700 p-2 rounded-l-lg w-full text-sm sm:text-md"><%= cat.name %>/button></li>
+                        <% end %>
                         <% end %>
                     </ul>
+                    <%= inline_svg "add.svg", class: 'add-category icon mt-4 mx-auto w-6'%>
                 </div>
                 <div class="items bg-dark-mode-lighter border border-gray-700 ml-4 rounded shadow-md sm:w-5/6 text-gray-100 w-2/3">
                     <% if @items.any? then %>
-                        <% @items.each do |item| %>
-                            <div class="item <%= item.category.name %> p-4 sm:pl-8 sm:py-4">
-                                <p class="item-content text-sm sm:text-md tracking-normal leading-normal pb-1 text-grey-darkest"><%= item.content %></p>
-                                <p class="item-notes gothic-neo text-gray-100"><%= item.notes %></p>
-                            </div>
-                        <% end %>
+                    <% @items.each do |item| %>
+                    <div class="item pl-6 py-1">
+                        <p class="item-content text-sm sm:text-md tracking-normal leading-normal text-grey-darkest"><%= item.content %></p>
+                        <p class="item-notes gothic-neo text-gray-100"><%= item.notes %></p>
+                    </div>
+                    <% end %>
                     <% end %>
                 </div>
             </div>
             <div class="absolute bottom-0 mb-12 container">
-                <form action="/item/create" class="flex" accept-charset="UTF-8" id="item-form" data-remote="true" method="get"><input name="utf8" type="hidden" value="✓">
-                    <input type="text" placeholder="New Item" name="new_item" id="new_item" class="bg-dark-mode-lighter border border-gray-700 gothic-neo p-2 pl-8 rounded text-gray-100 <% if @categories.any? %> w-9/12 <% else %> w-11/12 <% end %>">
-                    <% if @categories.any? then %>
+                <form accept-charset="UTF-8" id="item-form" data-remote="true" method="get"><input name="utf8" type="hidden" value="✓">
+                    <div class="flex">
+                        <input type="text" placeholder="New Item" name="item_content" id="item_content" class="bg-dark-mode-lighter border border-gray-700 gothic-neo p-2 pl-8 rounded text-gray-100 <% if @categories.any? %> w-10/12 <% else %> w-full <% end %>">
+                        <% if @categories.any? then %>
                         <select name="category" id="category" class="w-2/12 border border-gray-700">
                             <% @categories.each do |cat| %>
-                                <option value="<%= cat.id %>"><%= cat.name %></option>
+                            <option value="<%= cat.id %>"><%= cat.name %></option>
                             <% end %>
                         </select>
-                    <% end %>
-                    <div class="relative w-1/12 bg-dark-mode-lighter border border-gray-700 text-gray-100 text-left p-1 flex rounded justify-around hover:bg-gray-800">
-                    <input type="submit" value="Add" class="bg-transparent z-20" />
-                    <%= inline_svg "add-list.svg", class: 'add-list h-8 icon right-0 w-6'%>
+                        <% end %>
+                    </div>
+                    <div class="flex">
+                        <textarea id="item_notes" placeholder="Item Notes" class="block bg-dark-mode-lighter border border-gray-700 gothic-neo h-12 p-2 pl-8 rounded text-gray-100 w-11/12"></textarea>
+                        <input type="submit" value="Add" class="w-1/12 bg-dark-mode-lighter border border-gray-700 text-gray-100 text-left p-1 flex rounded justify-around hover:bg-gray-800" />
                     </div>
                 </form>
             </div>
         </div>
     </section>
+    <div id="category-modal" class="absolute bg-gray-100 flex hidden mx-auto relative rounded w-1/3 z-50">
+        <form action="/category/create" class="container px-6 py-2 z-20" accept-charset="UTF-8" id="category-form" data-remote="true" method="get"><input name="utf8" type="hidden" value="✓">
+            <h2 class="text-lg py-3 text-center">Create a Category</h2>
+            <input type="text" placeholder="Name" name="category_name" id="category_name" class="border border-gray-700 gothic-neo p-2 pl-8 my-2 rounded text-gray-700 w-full">
+            <input type="text" placeholder="Color" name="category_color" id="category_color" class="border border-gray-700 gothic-neo p-2 pl-8 my-2 rounded text-gray-700 w-full">
+            <input type="submit" value="Create" class="w-1/2 mx-auto border border-gray-700 text-gray-700 text-left my-2 p-1 flex rounded justify-around hover:bg-green-600" />
+        </form>
+    </div>
 </body>
 
 <% content_for :javascripts do %>
 <script>
+    //Sorting function for items
     $(function () {
         $('.category-list button').click(function () {
-            window.category_id = this.val;             
+            window.category_id = this.val;
             window.category_name = this.id;
             var get_current = $('.items .' + window.category_name);
 
@@ -58,30 +70,47 @@
         });
         $('#showall').click(function () {
             $('.item').show(500);
-        });        
+        });
     });
 
-    $("add-list").on("click").trigger("submit");
+    //get category selection from item form
+    $("select.category").change(function () {
+        window.selectedCategory = $(this).children("option:selected").val();
+    });
 
     function save_item() {
-        $("#item-form").on('submit', function (event) {
+        $('#item-form').submit(function (event) {
             event.preventDefault();
             console.log("Saving item");
-            category_id = window.category_id;
-            item = $("#new-item").val();
+
+            category_id = window.selectedCategory;
+            item_content = $("#item_content").val();
+            item_notes = $("#item_content").val();
+            saveToDB();
+        });
+    }
+
+    //adding categories function
+    $('.add-category').on('click', function () {
+        $('#category-modal').removeClass('hidden');
+    })
+
+    function save_category() {
+        $('#item-form').submit(function (event) {
+            event.preventDefault();
+            console.log("Saving category");
+
+            category_name = $("#category_name").val();
+            category_color = $("#category_color").val();
+            category_class = category_name.value.toLowerCase().replace(/\s/g, '');
+            $('#category-modal').addClass('hidden');
 
             saveToDB();
         });
     }
 
-    function save_category() {
-        console.log("Saving category");
-
-        saveToDB();
-    }
-
     function saveToDB() {
-        console.log("Saving to the db");        
+        console.log("Saving to the db");
         $.ajax({
             async: false,
             type: "GET",
@@ -101,7 +130,7 @@
                 $(".form-status").html("");
                 $(".form-status").html("There was a problem saving...");
             },
-            success: function () {                
+            success: function () {
                 $(".form-status").html("");
                 $(".form-status").html("Saved! Last: " + d.toLocaleTimeString());
             }

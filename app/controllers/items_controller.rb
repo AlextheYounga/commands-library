@@ -2,13 +2,10 @@ class ItemsController < ApplicationController
 
     def create    
         @item = Item.new
-        @item.content = params["content"]
+        @item.content = params["item_content"]
+        current_user ||= User.find(session[:user_id]) if session[:user_id]
         @item.user = current_user
-        if @item.save
-            flash[:notice] = "Item was successfully created".         
-        else
-            flash[:notice] = "Failed to save item."
-        end
+        @item.save!
     end
 
     private
