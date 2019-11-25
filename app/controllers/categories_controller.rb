@@ -3,9 +3,9 @@ class CategoriesController < ApplicationController
 
     def create    
         @category = Category.new
-        @category.name = params["category_name"]
-        @category.color = params["category_color"]
-        selector = (params["category_name"]).gsub(/\s+/, "").downcase.to_s
+        @category.name = params["name"]
+        @category.color = params["color"]
+        selector = (params["name"]).gsub(/\s+/, "").downcase.to_s
         @category.selector = selector
         @category.save!
     end
