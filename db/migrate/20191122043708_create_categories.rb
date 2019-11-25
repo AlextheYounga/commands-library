@@ -3,7 +3,7 @@ class CreateCategories < ActiveRecord::Migration[5.2]
     create_table :categories do |t|
       t.string :name
       t.string :color
-      t.string :class
+      t.string :selector
       t.timestamps
     end
   end
