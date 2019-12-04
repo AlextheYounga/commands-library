@@ -4,54 +4,59 @@
         <div class="container mx-auto px-2">
             <span class="form-status float-right text-gray-500 tracking-wide w-1/3"></span>
             <div class="flex">
+                <!-- Buttons -->
                 <div class="w-1/3 sm:w-1/6">
                     <ul class="category-list list-reset">
                         <li><button id="showall" class="bg-dark-mode-lighter border border-gray-700 text-gray-100 hover:border-gray-700 hover:bg-gray-100 hover:text-gray-700 p-2 rounded w-full text-sm sm:text-md">Show All</button></li>
                         <% if @categories.any? then %>
                         <% @categories.each do |cat| %>
-                        <li><button id="<%= cat.selector %>" val="<%= cat.id %>" class="bg-dark-mode-lighter border border-gray-700 text-gray-100 hover:border-gray-700 hover:bg-gray-100 hover:text-gray-700 p-2 rounded-l-lg w-full text-sm sm:text-md"><%= cat.name %></button></li>
+                        <li><button id="<%= cat.selector %>" class="bg-dark-mode-lighter border border-gray-700 text-gray-100 hover:border-gray-700 hover:bg-gray-100 hover:text-gray-700 p-2 rounded-l-lg w-full text-sm sm:text-md"><%= cat.name %></button></li>
                         <% end %>
                         <% end %>
                     </ul>
                     <%= inline_svg "add.svg", class: 'add-category icon mt-4 mx-auto w-6'%>
                 </div>
+                <!-- Items -->
                 <div class="items bg-dark-mode-lighter border border-gray-700 ml-4 rounded shadow-md sm:w-5/6 text-gray-100 w-2/3">
                     <% if @items.any? then %>
                     <% @items.each do |item| %>
-                    <div class="item pl-6 py-1">
-                        <p class="<%= Category.find_by(id: item.category_ids).selector %> item-content text-sm sm:text-md tracking-normal leading-normal text-grey-darkest"><%= item.content %></p>
-                        <p class="item-notes gothic-neo text-gray-100"><%= item.notes %></p>
+                    <div class="item <%= Category.find_by(id: item.category_ids).selector %> pl-6 py-1 list-none" id="copy-item-<%= SecureRandom.hex(1) %>">
+                        <div class="flex" value="<%= item.content %>">
+                            <button class="z-20"><%= inline_svg "clipboard.svg", class: 'copy-clipboard w-6 mr-2'%></button>
+                            <p class="item-content text-sm sm:text-md tracking-normal leading-normal text-gray-100"><%= item.content %></p>
+                        </div>
+                        <li class="item-notes gothic-neo text-gray-100"><%= item.notes %></li>
+                        </ul>
+                        <% end %>
+                        <% end %>
                     </div>
-                    <% end %>
+                </div>
+                <div class="absolute bottom-0 mb-12 container">
+                    <%= form_with(model: @item, url: "item/create", :html => {role: "form", id: "item-form"}) do |f| %>
+                    <div class="flex">
+                        <%= f.text_field :content, placeholder: "Item Content", autofocus: true, class:"bg-dark-mode-lighter border border-gray-700 gothic-neo p-2 pl-8 rounded text-gray-100 w-10/12" %>
+                        <% if @categories.any? then %>
+                        <select name="category_ids[]" id="category_ids" class="w-2/12 bg-dark-mode-lighter border border-gray-700 gothic-neo text-gray-100">
+                            <% @categories.each do |cat| %>
+                            <option value="<%= cat.id %>"><%= cat.name %></option>
+                            <% end %>
+                        </select>
+                        <% end %>
+                    </div>
+                    <div class="flex">
+                        <%= f.text_area :notes, rows: 1, placeholder: "Item Notes", class: "block bg-dark-mode-lighter border border-gray-700 gothic-neo h-12 p-2 pl-8 rounded text-gray-100 w-11/12" %>
+                        <%= f.submit class: "w-1/12 bg-dark-mode-lighter border border-gray-700 text-gray-100 text-left p-1 flex rounded justify-around hover:bg-gray-800" %>
+                    </div>
                     <% end %>
                 </div>
             </div>
-        <div class="absolute bottom-0 mb-12 container">
-            <%= form_with(model: @item, url: "item/create", :html => {role: "form", id: "item-form"}) do |f| %>
-            <div class="flex">
-                <%= f.text_field :content, placeholder: "Item Content", autofocus: true, class:"bg-dark-mode-lighter border border-gray-700 gothic-neo p-2 pl-8 rounded text-gray-100 w-10/12" %>
-                <% if @categories.any? then %>
-                <select name="category_ids[]" id="category_ids" class="w-2/12 bg-dark-mode-lighter border border-gray-700 gothic-neo text-gray-100">
-                    <% @categories.each do |cat| %>
-                        <option value="<%= cat.id %>"><%= cat.name %></option>
-                    <% end %>
-                </select>
-                <% end %>
-            </div>
-            <div class="flex">
-                <%= f.text_area :notes, rows: 1, placeholder: "Item Notes", class: "block bg-dark-mode-lighter border border-gray-700 gothic-neo h-12 p-2 pl-8 rounded text-gray-100 w-11/12" %>
-                <%= f.submit class: "w-1/12 bg-dark-mode-lighter border border-gray-700 text-gray-100 text-left p-1 flex rounded justify-around hover:bg-gray-800" %>
-            </div>
-            <% end %>
-        </div>
-    </div>
     </section>
     <div id="category-modal" class="absolute bg-gray-100 h-64 inset-0 mx-auto rounded w-1/3 z-50 hidden">
         <%= form_with(model: @category, url: "/category/create", :html => {role: "form", class: "container px-6 py-2 z-20", id: "category-form"}) do |c| %>
-            <h2 class="text-lg py-3 text-center">Create a Category</h2>
-            <%= c.text_field :name, placeholder: "Category Name", autofocus: true, class:"border border-gray-700 gothic-neo p-2 pl-8 my-2 rounded text-gray-700 w-full" %>
-            <%= c.text_field :color, placeholder: "Category Color", autofocus: true, class:"border border-gray-700 gothic-neo p-2 pl-8 my-2 rounded text-gray-700 w-full" %>
-            <%= c.submit class: "w-1/2 mx-auto border border-gray-700 text-gray-700 text-left my-2 p-1 flex rounded justify-around hover:bg-green-600" %>
+        <h2 class="text-lg py-3 text-center">Create a Category</h2>
+        <%= c.text_field :name, placeholder: "Category Name", autofocus: true, class:"border border-gray-700 gothic-neo p-2 pl-8 my-2 rounded text-gray-700 w-full" %>
+        <%= c.text_field :color, placeholder: "Category Color", autofocus: true, class:"border border-gray-700 gothic-neo p-2 pl-8 my-2 rounded text-gray-700 w-full" %>
+        <%= c.submit class: "w-1/2 mx-auto border border-gray-700 text-gray-700 text-left my-2 p-1 flex rounded justify-around hover:bg-green-600" %>
         <% end %>
     </div>
 </body>
@@ -61,13 +66,11 @@
     //Sorting function for items
     $(function () {
         $('.category-list button').click(function () {
-            window.category_id = this.val;
-            window.category_name = this.id;
-            var get_current = $('.items .' + window.category_name);
+            var get_id = this.id;
+            var get_current = $('.items .' + get_id);
 
-            $('.item').not(window.category_name).hide(500);
-            window.category_name.show(500);
-            console.log(window.category_name);
+            $('.item').not(get_current).hide(500);
+            get_current.show(500);
         });
         $('#showall').click(function () {
             $('.item').show(500);
@@ -83,9 +86,26 @@
     $('.add-category').on('click', function () {
         $('#category-modal').removeClass('hidden');
     })
-    $('#category-form').submit(function()  {
+    $('#category-form').submit(function () {
         $('#category-modal').addClass('hidden');
     })
+
+    //copy to clipboard
+    function copy(clicked_id) {
+        /* Get the text field */
+        var copyText = document.getElementById(clicked_id);
+        // /* Select the text field */
+        copyText.select();
+        // copyText.setSelectionRange(0, 99999); /*For mobile devices*/
+        /* Copy the text inside the text field */
+        document.execCommand("copy");
+        /* Alert the copied text */
+        alert("Copied the text: " + copyText.value);
+    }
+
+    $('.copy-clipboard').on('click', function () {
+        console.log($(this).closest());
+    });
 
 </script>
 <% end %>
