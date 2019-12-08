@@ -5,6 +5,8 @@ Rails.application.routes.draw do
   post 'item/create', to: 'items#create'
   post 'category/create', to: 'categories#create'
   resources :users
+  resources :items
+  resources :categories
   get 'signup', to: 'users#signup'
   get 'login', to: 'sessions#login'
   post 'login', to: 'sessions#create'
