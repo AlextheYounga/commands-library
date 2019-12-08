@@ -1,5 +1,5 @@
 <body class="bg-dark-mode">
-    <section class="pb-40">
+    <section class="pb-64">
         <h1 class="gothic-neo mb-8 pt-20 text-center text-gray-100">Library</h1>
         <div class="container mx-auto px-2">
             <span class="form-status float-right text-gray-500 tracking-wide w-1/3"></span>
@@ -21,7 +21,7 @@
                     <% if @items.any? then %>
                     <% @items.each do |item| %>
                     <% random_id = SecureRandom.hex(1) %>
-                    <div class="item <%= Category.find_by(id: item.category_ids).selector unless nil%> pl-6 py-1 list-none flex">
+                    <div class="item <%= Category.find_by(id: item.category_ids).selector unless nil %> pl-6 py-1 list-none flex">
                         <button class="clipboard-btn" data-clipboard-action="copy" data-clipboard-target="#<%= random_id %>"><%= inline_svg "clipboard.svg", class: 'copy-clipboard w-6 mr-2'%></button>
                         <p id="<%= random_id %>" class="item-content text-sm sm:text-md tracking-normal leading-normal text-gray-100"><%= item.content %></p>
                         <p class="item-notes absolute hidden gothic-neo text-gray-100"><%= item.notes %></p>
@@ -82,32 +82,10 @@
         });
     });
 
-    //get category selection from item form
-    $("select.category").change(function () {
-        window.selectedCategory = $(this).children("option:selected").val();
-    });
-
     //adding categories function
     $('#add-category').on('click', function () {
         $('#category-modal').removeClass('hidden');
     })
-
-    //copy to clipboard
-    function copy(clicked_id) {
-        /* Get the text field */
-        var copyText = document.getElementById(clicked_id);
-        // /* Select the text field */
-        copyText.select();
-        // copyText.setSelectionRange(0, 99999); /*For mobile devices*/
-        /* Copy the text inside the text field */
-        document.execCommand("copy");
-        /* Alert the copied text */
-        alert("Copied the text: " + copyText.value);
-    }
-
-    $('.copy-clipboard').on('click', function () {
-        console.log($(this).closest());
-    });
 
 </script>
 <% end %>
