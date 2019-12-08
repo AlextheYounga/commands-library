@@ -34,6 +34,7 @@ gem 'inline_svg'
 gem 'hirb'
 gem "simple_calendar", "~> 2.0"
 gem 'clipboard-rails'
+gem 'randomstring'
 
 
 # Use ActiveStorage variant

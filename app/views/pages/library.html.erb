@@ -20,7 +20,7 @@
                 <div class="items bg-dark-mode-lighter border border-gray-700 ml-4 rounded shadow-md sm:w-5/6 text-gray-100 w-2/3">
                     <% if @items.any? then %>
                         <% @items.each do |item| %>
-                            <% random_id = SecureRandom.hex(1) %>
+                            <% random_id = Randomstring.generate(4) %>
                             <div class="item <%= Category.find_by(id: item.category_ids).selector unless nil %> pl-6 py-1 list-none flex">
                                 <button class="clipboard-btn" data-clipboard-action="copy" data-clipboard-target=".items #<%= random_id %>"><%= inline_svg "clipboard.svg", class: 'copy-clipboard w-6 mr-2'%></button>
                                 <p id="<%= random_id %>" class="item-content text-sm sm:text-md tracking-normal leading-normal text-gray-100"><%= item.content %></p>

@@ -1,4 +1,4 @@
-require 'securerandom'
+require 'randomstring'
 class PagesController < ApplicationController
 
     def home     
