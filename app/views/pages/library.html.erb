@@ -1,5 +1,5 @@
 <body class="bg-dark-mode">
-    <section>
+    <section class="pb-40">
         <h1 class="gothic-neo mb-8 pt-20 text-center text-gray-100">Library</h1>
         <div class="container mx-auto px-2">
             <span class="form-status float-right text-gray-500 tracking-wide w-1/3"></span>
@@ -21,37 +21,41 @@
                     <% if @items.any? then %>
                     <% @items.each do |item| %>
                     <% random_id = SecureRandom.hex(1) %>
-                    <div class="item <%= Category.find_by(id: item.category_ids).selector %> pl-6 py-1 list-none flex">
+                    <div class="item <%= Category.find_by(id: item.category_ids).selector unless nil%> pl-6 py-1 list-none flex">
                         <button class="clipboard-btn" data-clipboard-action="copy" data-clipboard-target="#<%= random_id %>"><%= inline_svg "clipboard.svg", class: 'copy-clipboard w-6 mr-2'%></button>
                         <p id="<%= random_id %>" class="item-content text-sm sm:text-md tracking-normal leading-normal text-gray-100"><%= item.content %></p>
                         <p class="item-notes absolute hidden gothic-neo text-gray-100"><%= item.notes %></p>
-                        <%= render 'layouts/result' %>
-                    </div>                    
-                    <% end %>
-                    <% end %>
-                </div>
-                <div class="absolute bottom-0 mb-12 container">
-                    <%= form_with(model: @item, url: "item/create", :html => {role: "form", id: "item-form"}) do |f| %>
-                    <div class="flex">
-                        <div class="flex flex-wrap w-4/5">
-                            <%= f.text_field :content, placeholder: "Item Content", autofocus: true, class:"bg-dark-mode-lighter border border-gray-700 gothic-neo p-2 pl-8 rounded text-gray-100 w-10/12" %>
-                            <% if @categories.any? then %>
-                            <select name="category_ids[]" id="category_ids" class="w-2/12 bg-dark-mode-lighter border border-gray-700 gothic-neo text-gray-100">
-                                <% @categories.each do |cat| %>
-                                <option value="<%= cat.id %>"><%= cat.name %></option>
-                                <% end %>
-                            </select>
-                            <% end %>                            
-                            <%= f.text_area :notes, rows: 1, placeholder: "Item Notes", class: "bg-dark-mode-lighter border border-gray-700 gothic-neo h-12 p-2 pl-8 rounded text-gray-100 w-full" %>                            
-                        </div>
-                        <div class="w-1/5">                        
-                            <%= f.submit class: "w-1/3 mx-auto bg-dark-mode-lighter border border-gray-700 text-gray-100 text-left p-3 m-4 flex rounded justify-around hover:bg-gray-800" %>
-                        </div>
                     </div>
+                    <% end %>
                     <% end %>
                 </div>
             </div>
+        </div>
     </section>
+    <section class="container mx-auto px-2">
+        <div class="fixed bottom-0 mb-12 container">
+            <%= form_with(model: @item, url: "item/create", :html => {role: "form", id: "item-form"}) do |f| %>
+            <div class="flex">
+                <div class="flex flex-wrap w-4/5">
+                    <%= f.text_field :content, placeholder: "Item Content", autofocus: true, class:"bg-dark-mode-lighter border border-gray-700 gothic-neo p-2 pl-8 rounded text-gray-100 w-10/12" %>
+                    <% if @categories.any? then %>
+                    <select name="category_ids[]" id="category_ids" class="w-2/12 bg-dark-mode-lighter border border-gray-700 gothic-neo text-gray-100">
+                        <% @categories.each do |cat| %>
+                        <option value="<%= cat.id %>"><%= cat.name %></option>
+                        <% end %>
+                    </select>
+                    <% end %>
+                    <%= f.text_area :notes, rows: 1, placeholder: "Item Notes", class: "bg-dark-mode-lighter border border-gray-700 gothic-neo h-12 p-2 pl-8 rounded text-gray-100 w-full" %>
+                </div>
+                <div class="w-1/5">
+                    <%= f.submit class: "w-1/3 mx-auto bg-dark-mode-lighter border border-gray-700 text-gray-100 text-left p-3 m-4 flex rounded justify-around hover:bg-gray-800" %>
+                </div>
+            </div>
+            <% end %>
+        </div>
+    </section>
+
+
     <div id="category-modal" class="absolute bg-gray-100 h-64 inset-0 mx-auto rounded w-1/3 z-50 hidden">
         <%= form_with(model: @category, url: "/category/create", :html => {role: "form", class: "container px-6 py-2 z-20", id: "category-form"}) do |c| %>
         <h2 class="text-lg py-3 text-center">Create a Category</h2>
@@ -106,10 +110,6 @@
 
     $('.copy-clipboard').on('click', function () {
         console.log($(this).closest());
-    });
-
-    $(document).ajaxComplete(function (event, xhr, status) {
-        $('items')
     });
 
 </script>
