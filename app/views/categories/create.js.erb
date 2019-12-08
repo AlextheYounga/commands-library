@@ -1,0 +1,5 @@
+add_button = $("#add-category").detach();
+$('.category-list').append("<%= j (render partial: 'categories/category') %>");
+$('#category_ids').append("<%= j (render partial: 'categories/category_options') %>");
+$('.category-list').append(add_button);
+$('#category-modal').addClass('hidden');
