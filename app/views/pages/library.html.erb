@@ -14,7 +14,7 @@
                         <% end %>
                         <% end %>
                     </ul>
-                    <%= inline_svg "add.svg", class: 'add-category icon mt-4 mx-auto w-6'%>
+                    <%= inline_svg "add.svg", class: 'icon mt-4 mx-auto w-6', id: "add-category"%>
                 </div>
                 <!-- Items -->
                 <div class="items bg-dark-mode-lighter border border-gray-700 ml-4 rounded shadow-md sm:w-5/6 text-gray-100 w-2/3">
@@ -88,11 +88,8 @@
     });
 
     //adding categories function
-    $('.add-category').on('click', function () {
+    $('#add-category').on('click', function () {
         $('#category-modal').removeClass('hidden');
-    })
-    $('#category-form').submit(function () {
-        $('#category-modal').addClass('hidden');
     })
 
     //copy to clipboard
