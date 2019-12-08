@@ -19,17 +19,15 @@
                 <!-- Items -->
                 <div class="items bg-dark-mode-lighter border border-gray-700 ml-4 rounded shadow-md sm:w-5/6 text-gray-100 w-2/3">
                     <% if @items.any? then %>
-                    <% @items.each do |item| %>
-                    <div class="item <%= Category.find_by(id: item.category_ids).selector %> pl-6 py-1 list-none" id="copy-item-<%= SecureRandom.hex(1) %>">
-                        <div class="flex" value="<%= item.content %>">
-                            <button class="z-20"><%= inline_svg "clipboard.svg", class: 'copy-clipboard w-6 mr-2'%></button>
-                            <p class="item-content text-sm sm:text-md tracking-normal leading-normal text-gray-100"><%= item.content %></p>
-                        </div>
-                        <li class="item-notes gothic-neo text-gray-100"><%= item.notes %></li>
-                        </ul>
+                        <% @items.each do |item| %>
+                        <% random_id = SecureRandom.hex(1) %>
+                            <div class="item <%= Category.find_by(id: item.category_ids).selector %> pl-6 py-1 list-none flex">                                
+                                <button class="clipboard-btn" data-clipboard-action="copy" data-clipboard-target="#<%= random_id %>"><%= inline_svg "clipboard.svg", class: 'copy-clipboard w-6 mr-2'%></button>
+                                <p id="<%= random_id %>" class="item-content text-sm sm:text-md tracking-normal leading-normal text-gray-100"><%= item.content %></p>
+                            </div>
+                        <p class="item-notes absolute hidden gothic-neo text-gray-100"><%= item.notes %></p>
                         <% end %>
-                        <% end %>
-                    </div>
+                    <% end %>                    
                 </div>
                 <div class="absolute bottom-0 mb-12 container">
                     <%= form_with(model: @item, url: "item/create", :html => {role: "form", id: "item-form"}) do |f| %>
@@ -38,7 +36,7 @@
                         <% if @categories.any? then %>
                         <select name="category_ids[]" id="category_ids" class="w-2/12 bg-dark-mode-lighter border border-gray-700 gothic-neo text-gray-100">
                             <% @categories.each do |cat| %>
-                            <option value="<%= cat.id %>"><%= cat.name %></option>
+                                <option value="<%= cat.id %>"><%= cat.name %></option>
                             <% end %>
                         </select>
                         <% end %>
@@ -105,6 +103,13 @@
 
     $('.copy-clipboard').on('click', function () {
         console.log($(this).closest());
+    });
+
+    $(document).ajaxComplete(function (event, xhr, status) {
+        if (settings.url === "ajax/test.html") {
+            $(".log").text("Triggered ajaxComplete handler. The result is " +
+                xhr.responseText);
+        }
     });
 
 </script>

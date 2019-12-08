@@ -33,6 +33,7 @@ gem 'jquery-rails'
 gem 'inline_svg'
 gem 'hirb'
 gem "simple_calendar", "~> 2.0"
+gem 'clipboard-rails'
 
 
 # Use ActiveStorage variant
