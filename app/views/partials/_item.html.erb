@@ -1,0 +1,8 @@
+<% if @item %>    
+    <% random_id = SecureRandom.hex(1) %>
+    <div class="@item <%= Category.find_by(id: @item.category_ids).selector %> pl-6 py-1 list-none flex">
+        <button class="clipboard-btn" data-clipboard-action="copy" data-clipboard-target="#<%= random_id %>"><%= inline_svg "clipboard.svg", class: 'copy-clipboard w-6 mr-2'%></button>
+        <p id="<%= random_id %>" class="@item-content text-sm sm:text-md tracking-normal leading-normal text-gray-100"><%= @item.content %></p>
+        <p class="@item-notes absolute hidden gothic-neo text-gray-100"><%= @item.notes %></p>        
+    </div>                        
+<% end %>
