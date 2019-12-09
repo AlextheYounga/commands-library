@@ -22,9 +22,11 @@
                         <% @items.each do |item| %>
                             <% random_id = Randomstring.generate(4) %>
                             <div class="item <%= Category.find_by(id: item.category_ids).selector unless nil %> pl-6 py-1 list-none flex">
-                                <button class="clipboard-btn" data-clipboard-action="copy" data-clipboard-target=".items #<%= random_id %>"><%= inline_svg "clipboard.svg", class: 'copy-clipboard w-6 mr-2'%></button>
+                                <button class="clipboard-btn" data-clipboard-action="copy" data-clipboard-target="#<%= random_id %>"><%= inline_svg "clipboard.svg", class: 'copy-clipboard w-6 mr-2'%></button>
                                 <p id="<%= random_id %>" class="item-content text-sm sm:text-md tracking-normal leading-normal text-gray-100"><%= item.content %></p>
-                                <p class="item-notes absolute hidden gothic-neo text-gray-100"><%= item.notes %></p>
+                                <% if item.notes %>
+                                    <p id="item-notes" class="hidden bg-gray-300 fixed gothic-neo m-12 p-8 right-0 rounded text-gray-800 top-0 z-20 <%= random_id %>">Notes: <%= item.notes %></p>
+                                <% end %>
                             </div>
                         <% end %>
                     <% end %>
@@ -85,7 +87,20 @@
     //adding categories function
     $('#add-category').on('click', function () {
         $('#category-modal').removeClass('hidden');
-    })    
+    })
+
+    $('.item-content').on('click', function () {
+        content_id = $(this).attr('id');
+        if ($('#item-notes').hasClass(content_id)) {
+            $('.item .' + content_id).removeClass('hidden')
+        }
+        if($('.item .' + content_id).is(":visible")){
+            $('.item .' + content_id).fadeIn('fast').delay(3500).fadeOut('slow');           
+            $('.item .' + content_id).addClass('hidden')
+            console.log("here");
+            console.log($('.item .' + content_id).hasClass('hidden'));
+        }
+    });
 
 </script>
 <% end %>
